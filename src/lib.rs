@@ -171,7 +171,7 @@ pub fn parse_boundary<T: AsRef<str>>(content_type: T) -> Result<String> {
         .parse::<mime::Mime>()
         .map_err(Error::DecodeContentType)?;
 
-    if !(m.type_() == mime::MULTIPART && m.subtype() == mime::FORM_DATA) {
+    if !(m.type_() == mime::MULTIPART && m.subtype() == "mixed") {
         return Err(Error::NoMultipart);
     }
 
