@@ -120,9 +120,7 @@ impl<'r> StreamBuffer<'r> {
             }
             None if self.eof => {
                 trace!("no new field found: EOF. terminating");
-                Err(crate::Error::IncompleteFieldData {
-                    field_name: field_name.map(|s| s.to_owned()),
-                })
+                Ok(Some((true, self.read_full_buf())))
             }
             None => {
                 let buf_len = self.buf.len();

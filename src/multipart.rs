@@ -303,7 +303,8 @@ impl<'r> Multipart<'r> {
                 Some(bytes) => bytes,
                 None => {
                     return if state.buffer.eof {
-                        Poll::Ready(Err(Error::IncompleteStream))
+                        state.stage = StreamingStage::Eof;
+                        Poll::Ready(Ok(None))
                     } else {
                         Poll::Pending
                     };
@@ -313,7 +314,7 @@ impl<'r> Multipart<'r> {
             if &boundary_bytes[..] == format!("{}{}", constants::BOUNDARY_EXT, boundary).as_bytes() {
                 state.stage = StreamingStage::DeterminingBoundaryType;
             } else {
-                return Poll::Ready(Err(Error::IncompleteStream));
+                return Poll::Ready(Ok(None));
             }
         }
 
